@@ -93,7 +93,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ef3054',
     alignItems: 'center',
-    //justifyContent: 'center',
   },
   inputContainer:{
     flexDirection: 'row',
@@ -101,15 +100,6 @@ const styles = StyleSheet.create({
     justifyContent:'space-between',
     alignItems:'center',
     marginVertical:20
-  },
-  buttonContainer:{
-    //backgroundColor:'#fff',
-    width:'30%',
-    height:40,
-    alignItems:'center',
-    justifyContent:'center',
-    borderRadius: 5,
-    alignSelf:'center'
   },
   listContainer:{
     marginTop:10,
