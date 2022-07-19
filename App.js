@@ -1,20 +1,118 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React,{useState} from 'react';
+import { FlatList, Image, Modal, Pressable, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+
+import AppButton from './components/appButton';
+import AppTextInput from './components/appTextInput';
+
+
+let lastId = 0;
 
 export default function App() {
+  const [goals,setGoals] = useState([]);
+  const [currentGoal,setCurrentGoal] = useState('')
+  const [modalVisible,setModalVisible] = useState(false)
+  const goalInputHandler=(val)=>{
+      setCurrentGoal(val)
+  }
+
+  const pushGoals=()=>{
+    let testObj = {
+      id : ++lastId,
+      value: currentGoal
+    }
+    goals.push(testObj)
+    setCurrentGoal('')
+    setModalVisible(false)
+  }
+
+  const deleteItem=(obj)=>{
+    console.log('Running',obj)
+    console.log('Goals',goals)
+    let filteredData = goals.filter(val => val.id !== obj.id )
+    console.log('filter=>',filteredData)
+    setGoals(filteredData)
+  }
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={styles.mainContainer}>
+        <Modal visible={modalVisible}>
+          <SafeAreaView style={{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:'#ef3054'}}>
+            <Image source={require('./src/images/target.png')} style={{height:150,width:150,tintColor:'#fff'}}/>
+            <View style={{height:20}}/>
+            <AppTextInput 
+            placeholder='Add your goal'
+            value={currentGoal}
+            onChangeText={(val)=>goalInputHandler(val)}
+            />
+            <View style={styles.inputContainer}>
+              <AppButton
+              onColor = '#F25471'
+              offColor = '#FFF'
+              onPress={()=>pushGoals()}
+              title = {'ADD'}
+              />
+              <AppButton
+              title={'CANCEL'}
+              onPress={()=>setModalVisible(false)}
+              onColor = '#8F8F8F'
+              offColor = 'black'
+              textColor={'#fff'}
+              />
+            </View>
+          </SafeAreaView>
+      </Modal>
+      <View style={styles.listContainer}>
+        <AppButton
+          onPress={()=>setModalVisible(true)}  
+          title = {'ADD GOAL'}
+          style={{marginVertical:8,width:'80%'}}
+          onColor='#F25471'
+          offColor='#FFA630'
+          />
+        <FlatList
+        data={goals}
+        keyExtractor={(item, index) => String(index)}
+        scrollEnabled={true}
+        renderItem={({item})=>(
+          <AppButton
+          style={{marginVertical:8,width:'80%'}}
+          title = {item.value}
+          onPress={()=>deleteItem(item)} 
+          onColor='#F25471'
+          offColor='#fff'
+          />
+        )}
+        />
+
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#ef3054',
     alignItems: 'center',
-    justifyContent: 'center',
+    //justifyContent: 'center',
   },
+  inputContainer:{
+    flexDirection: 'row',
+    width:'60%',
+    justifyContent:'space-between',
+    alignItems:'center',
+    marginVertical:20
+  },
+  buttonContainer:{
+    //backgroundColor:'#fff',
+    width:'30%',
+    height:40,
+    alignItems:'center',
+    justifyContent:'center',
+    borderRadius: 5,
+    alignSelf:'center'
+  },
+  listContainer:{
+    marginTop:10,
+    width:'100%',
+  }
 });
